@@ -15,7 +15,7 @@ export default function App() {
         setLoading(true);
         setError("");
         try {
-            const response = await axios.post("http://localhost:5000/api/restaurants", { place, range });
+            const response = await axios.post("https://scraper-jpb7.onrender.com/api/restaurants", { place, range });
             setRestaurants(response.data);
             setCurrentPage(1); // Reset pagination
         } catch (error) {
