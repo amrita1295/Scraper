@@ -1,5 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
+import * as XLSX from "xlsx";
 
 export default function App() {
     const [place, setPlace] = useState("");
@@ -23,6 +24,19 @@ export default function App() {
             setError("Failed to fetch restaurants. Please try again.");
         }
         setLoading(false);
+    };
+
+    const exportToExcel = () => {
+        if (restaurants.length === 0) {
+            alert("No data to export");
+            return;
+        }
+
+        const worksheet = XLSX.utils.json_to_sheet(restaurants);
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Restaurants");
+
+        XLSX.writeFile(workbook, "restaurants.xlsx");
     };
 
     const totalPages = Math.ceil(restaurants.length / itemsPerPage);
@@ -60,6 +74,16 @@ export default function App() {
             {/* Restaurant List */}
             {restaurants.length > 0 ? (
                 <div className="w-full max-w-5xl">
+                    {/* Export to Excel Button */}
+                    <div className="flex justify-end mb-4">
+                        <button 
+                            onClick={exportToExcel} 
+                            className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md transition"
+                        >
+                            Export to Excel
+                        </button>
+                    </div>
+
                     {displayedRestaurants.map((restaurant, idx) => (
                         <div key={idx} className="bg-white p-4 shadow-md rounded-lg mb-4">
                             <h2 className="text-xl font-semibold text-gray-800">{restaurant.name}</h2>
